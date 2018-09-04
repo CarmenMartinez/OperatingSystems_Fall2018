@@ -8,27 +8,9 @@
 char credentials[MAXPASSWD][MAXUSERS];
 
 char * getUser(int indice){
-	
-	char* ayuda = "AYUDAGetUser";
-	printf("%s\n", ayuda);
-	int i, x = 0;
 	char * user;
-	int twoPoints = 0;
-	for(i = 0; i < 	MAXPASSWD; i++){
-		char* ayuda = "AYUDA";
-		printf("%s %d\n", ayuda,i);
-		if(credentials[indice][i] == ':'){
-			char* ayuda = "AYUDAGetUserCredential indice i";
-			printf("%s\n", ayuda);
-			twoPoints = 1;
-		}
-		if(!twoPoints){
-			char* ayuda = "AYUDAGetUser if not two points";
-			printf("%s\n", ayuda);
-			*user = credentials[indice][i];
-			user++;
-		}
-	}
+	const char s[2] = ":";
+	user = strtok(credentials[indice], s);
 	return user;
 }
 						
@@ -37,7 +19,6 @@ char * getPasswd(int indice){
 	char * passwd;
 	int twoPoints = 0;
 	for(i = 0; i < MAXPASSWD; i++){
-		if(
 		if(credentials[indice][i] == ':'){
 			twoPoints = 1;
 		}
@@ -57,10 +38,14 @@ int verifyUser(char *user, char *passwd){
 	printf("%s\n", user);
 	printf("%s\n", passwd);
 	printf("%s\n", credentials[0]);	
+	
 	char* ayuda = "AYUDA";
 	printf("%s\n", ayuda);
-	vUser = getUser(0);
 	
+	vUser = getUser(0);
+	printf("%s\n", vUser);
+	return 1;
+	/*
 	for(i = 0; i < 50; i++){
 		printf("Entre al for");
 		vUser = getUser(i);
@@ -72,7 +57,7 @@ int verifyUser(char *user, char *passwd){
 				return 1;
 			}
 		}
-	}
+	}*/
 	return 0;
 }					
 
@@ -99,7 +84,7 @@ int main(){
 		fgets(user, MAXUSERS, stdin);
 		printf("Password: ");
 		fgets(passwd, MAXUSERS, stdin);
-		if(veriflyUser(user, passwd) == 1){
+		if(verifyUser(user, passwd) == 1){
 			printf("User verified");
 			//hacer todo el desvergue
 		};
