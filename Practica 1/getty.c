@@ -48,7 +48,6 @@ int verifyUser(char *user, char *passwd){
 	
 	for(i = 0; i < nUsers; i++){
 		strcpy(vUser, getUser(i));
-		
 		if(strcmp(user, vUser) == 0){
 			strcpy(vPasswd, getPasswd(i));
 			sscanf(vPasswd, "%s", withoutPass);
@@ -57,18 +56,16 @@ int verifyUser(char *user, char *passwd){
 			}
 		}
 	}
-	
-	
-	strcpy(vPasswd, getPasswd(0));
-	strcpy(vUser, getUser(1));
-	
 	return 0;
 }
 
-void waitChild(){
-	int status;
-	printf("bye, bye");
-	wait(&status);
+void deadChild(int status){
+	printf("Status recibido %d\n", status);
+	if(status == 1){
+		//voa matar a mi papi
+		kill(getppid(), SIGTERM);
+		//exit(0);
+	}
 }
 
 void openShell(){
@@ -78,14 +75,10 @@ void openShell(){
 	if(p == 0){
 		//abrir la nueva ventana
 		execlp("./sh", shParam, NULL);
-		//waitpid(p, &status, 0);
-		//wait(&status);
 	}
 	waitpid(p, &status, 0);
-	signal(SIGCHLD, waitChild);
+	deadChild(status>>8);
 }
-
-
 
 int main(){
 	FILE * fpasswd;
@@ -116,10 +109,6 @@ int main(){
 		if(verifyUser(sUser, sPasswd) == 1){
 			printf("User verified\n");
 			openShell();
-			//wait(NULL);
-			printf("Regrese bitches!");
-			//m = 0;
-			//hacer todo el desvergue
 		};
 	}
 	printf("Ya me sali alv");	

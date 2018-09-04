@@ -42,7 +42,11 @@ int main(){
 
 void handleChild() {
 	int status;
-	wait(NULL);
+	wait(&status);
+	printf("handleChild %d\n", status);
+	if(status != 0){
+		kill(0, SIGTERM);
+	}
 	pid_t p;
 	p = fork();
 	if(p == 0){
