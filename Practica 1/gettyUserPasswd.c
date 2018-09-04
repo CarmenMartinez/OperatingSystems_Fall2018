@@ -8,48 +8,47 @@
 char credentials[MAXPASSWD][MAXUSERS];
 
 char * getUser(int indice){
-	char * user;
+	char * user = malloc(sizeof *user);
+	const char s[2] = ":";
+	char credential[MAXPASSWD];
+	
+	memset(credential, '\0', sizeof(credential));
+	strcpy(credential, credentials[indice]);
+	
+	user = strtok(credential, s);
+
+	return user;
+}
+						
+char * getPasswd(int indice){
+	char * passwd = malloc(sizeof *passwd);
 	const char s[2] = ":";
 	char credential[MAXPASSWD];
 	
 	memset(credential, '\0', sizeof(credential));
 	strcpy(credential, credentials[0]);
 	
-	printf("bs Complete credential to check is %s\n", credential);
-	user = strtok(credential, s);
-	printf("as Complete credential to check is %s\n", user);
-	return user;
-}
-						
-char * getPasswd(int indice){
-	char * passwd;
-	const char s[3] = ": ";
-		
-	
-	//printf("Complete credential to check is %s\n", credentials[0]);
-	
-	passwd = strtok(credentials[indice], s);
-	
-	//printf("Separar el primer token %s\n", passwd);
+	passwd = strtok(credential, s);
 	passwd = strtok(NULL, s);
-	
-	//printf("Separar el segundo token %s\n", passwd);
+
 	return passwd;
 }
 
 int verifyUser(char *user, char *passwd){
 	int i, x;
-	char * vUser;
-	char * vPasswd;
+	char * vUser = malloc(sizeof *vUser);
+	char * vPasswd = malloc(sizeof *vPasswd);
 	
-	printf("Entered user%s\n", user);
-	printf("Entered passwd%s\n", passwd);
-	printf("Checking with %s\n", credentials[0]);	
+	//printf("Entered user%s\n", user);
+	//printf("Entered passwd%s\n", passwd);
+	//printf("Checking with %s\n", credentials[0]);	
 	
-	vUser = getUser(0);
-	printf("GetUser %s\n", vUser);
 	vPasswd = getPasswd(0);
-	printf("GetPasswd %s\n", vPasswd);
+	//printf("GetPasswd %s\n", vPasswd);
+	strcpy(vUser, getUser(1));
+	//vPasswd = getUser(1);
+	//printf("GetUser %s\n", vUser);
+	
 	return 1;
 	/*
 	for(i = 0; i < 50; i++){
