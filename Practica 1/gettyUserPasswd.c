@@ -43,17 +43,11 @@ int verifyUser(char *user, char *passwd){
 	
 	for(i = 0; i < nUsers; i++){
 		strcpy(vUser, getUser(i));
-		printf("%d user: %s\n", i, vUser);
-		printf("%s vs %s\n", user, vUser);
+		
 		if(strcmp(user, vUser) == 0){
 			strcpy(vPasswd, getPasswd(i));
 			sscanf(vPasswd, "%s", withoutPass);
-			printf("get in\n");
-			printf("%s vs %s\n", passwd, withoutPass);
-			printf("%d password: %s\n", i, withoutPass);
-			printf("%d\n", strcmp(passwd, withoutPass));
 			if(strcmp(passwd, withoutPass) == 0){
-				printf("User verified\n");
 				return 1;
 			}
 		}
@@ -84,6 +78,7 @@ int main(){
 	char * sUser;
 	char * sPasswd = malloc(sizeof * sPasswd);
 	int m = 1;
+	
 	while(m){
 		printf("User: ");
 		fgets(user, MAXUSERS, stdin);
@@ -91,16 +86,12 @@ int main(){
 		printf("Password: ");
 		fgets(passwd, MAXUSERS, stdin);
 		sscanf(passwd, "%s", sPasswd);
-		printf("Passwd %s\n", sPasswd);
 		if(verifyUser(sUser, sPasswd) == 1){
-			printf("User verified");
+			printf("User verified\n");
 			m = 0;
 			//hacer todo el desvergue
 		};
 	}
-	
-	for(int i = 0; i < nUsers; i++){
-		printf("%s",credentials[i]);
-	}	
+		
 	return 0;
 }
