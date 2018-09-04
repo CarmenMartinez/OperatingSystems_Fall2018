@@ -6,6 +6,7 @@
 #define MAXUSERS 50
 
 char credentials[MAXPASSWD][MAXUSERS];
+int nUsers = 0;
 
 char * getUser(int indice){
 	char * user = malloc(sizeof *user);
@@ -26,7 +27,7 @@ char * getPasswd(int indice){
 	char credential[MAXPASSWD];
 	
 	memset(credential, '\0', sizeof(credential));
-	strcpy(credential, credentials[0]);
+	strcpy(credential, credentials[indice]);
 	
 	passwd = strtok(credential, s);
 	passwd = strtok(NULL, s);
@@ -38,38 +39,36 @@ int verifyUser(char *user, char *passwd){
 	int i, x;
 	char * vUser = malloc(sizeof *vUser);
 	char * vPasswd = malloc(sizeof *vPasswd);
+	char * withoutPass = malloc(sizeof *withoutPass);
 	
-	//printf("Entered user%s\n", user);
-	//printf("Entered passwd%s\n", passwd);
-	//printf("Checking with %s\n", credentials[0]);	
-	
-	vPasswd = getPasswd(0);
-	//printf("GetPasswd %s\n", vPasswd);
-	strcpy(vUser, getUser(1));
-	//vPasswd = getUser(1);
-	//printf("GetUser %s\n", vUser);
-	
-	return 1;
-	/*
-	for(i = 0; i < 50; i++){
-		printf("Entre al for");
-		vUser = getUser(i);
-		printf("%s\n", vUser);
-		if(strncmp(user, vUser, MAXPASSWD) == 0){
-			vPasswd = getPasswd(i);
-			printf("%s\n", vPasswd);
-			if(strncmp(passwd, vPasswd, MAXPASSWD) == 0){
+	for(i = 0; i < nUsers; i++){
+		strcpy(vUser, getUser(i));
+		printf("%d user: %s\n", i, vUser);
+		printf("%s vs %s\n", user, vUser);
+		if(strcmp(user, vUser) == 0){
+			strcpy(vPasswd, getPasswd(i));
+			sscanf(vPasswd, "%s", withoutPass);
+			printf("get in\n");
+			printf("%s vs %s\n", passwd, withoutPass);
+			printf("%d password: %s\n", i, withoutPass);
+			printf("%d\n", strcmp(passwd, withoutPass));
+			if(strcmp(passwd, withoutPass) == 0){
+				printf("User verified\n");
 				return 1;
 			}
 		}
-	}*/
+	}
+	
+	
+	strcpy(vPasswd, getPasswd(0));
+	strcpy(vUser, getUser(1));
+	
 	return 0;
 }					
 
 int main(){
 	FILE * fpasswd;
-	//char credentials[MAXPASSWD][MAXUSERS];
-	int i, nUsers = 0;
+	int i;
 		
 	//Read all the passwords from the passwd.txt file
 	fpasswd = fopen("passwd.txt","r");
@@ -80,17 +79,22 @@ int main(){
 		nUsers++;
 	}
 	
-	
-	
 	//Enter the right credentials
 	char user[MAXUSERS], passwd[MAXUSERS];
-	while(1){
+	char * sUser;
+	char * sPasswd = malloc(sizeof * sPasswd);
+	int m = 1;
+	while(m){
 		printf("User: ");
 		fgets(user, MAXUSERS, stdin);
+		sscanf(user, "%s", sUser);
 		printf("Password: ");
 		fgets(passwd, MAXUSERS, stdin);
-		if(verifyUser(user, passwd) == 1){
+		sscanf(passwd, "%s", sPasswd);
+		printf("Passwd %s\n", sPasswd);
+		if(verifyUser(sUser, sPasswd) == 1){
 			printf("User verified");
+			m = 0;
 			//hacer todo el desvergue
 		};
 	}
