@@ -1,12 +1,17 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+#include<signal.h>
+#include<unistd.h>
 
 #define MAXPASSWD 50
 #define MAXUSERS 50
 
 char credentials[MAXPASSWD][MAXUSERS];
 int nUsers = 0;
+char shParam[] = {NULL};
 
 char * getUser(int indice){
 	char * user = malloc(sizeof *user);
@@ -58,7 +63,29 @@ int verifyUser(char *user, char *passwd){
 	strcpy(vUser, getUser(1));
 	
 	return 0;
-}					
+}
+
+void waitChild(){
+	int status;
+	printf("bye, bye");
+	wait(&status);
+}
+
+void openShell(){
+	int status;
+	pid_t p;
+	p = fork();
+	if(p == 0){
+		//abrir la nueva ventana
+		execlp("./sh", shParam, NULL);
+		//waitpid(p, &status, 0);
+		//wait(&status);
+	}
+	waitpid(p, &status, 0);
+	signal(SIGCHLD, waitChild);
+}
+
+
 
 int main(){
 	FILE * fpasswd;
@@ -88,10 +115,13 @@ int main(){
 		sscanf(passwd, "%s", sPasswd);
 		if(verifyUser(sUser, sPasswd) == 1){
 			printf("User verified\n");
-			m = 0;
+			openShell();
+			//wait(NULL);
+			printf("Regrese bitches!");
+			//m = 0;
 			//hacer todo el desvergue
 		};
 	}
-		
+	printf("Ya me sali alv");	
 	return 0;
 }
