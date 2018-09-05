@@ -42,11 +42,16 @@ int main(){
 
 void handleChild() {
 	int status;
-	wait(NULL);
+	wait(&status);
+	//Process kill by shutdown in sh
+	if(status != 0){
+		kill(0, SIGTERM);
+	}
+	
 	pid_t p;
 	p = fork();
 	if(p == 0){
-		//Creacion de 6 procesos 
+		//Reemplazo de proceso muerto
 		execvp("xterm", gettyParam);
 	}
 }
