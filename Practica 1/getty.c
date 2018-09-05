@@ -60,7 +60,6 @@ int verifyUser(char *user, char *passwd){
 }
 
 void deadChild(int status){
-	printf("Status recibido %d\n", status);
 	if(status == 1){
 		//voa matar a mi papi
 		kill(getppid(), SIGTERM);
@@ -111,6 +110,5 @@ int main(){
 			openShell();
 		};
 	}
-	printf("Ya me sali alv");	
 	return 0;
 }

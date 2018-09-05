@@ -1,8 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+
+
 
 int nParams = 0;
+int flag = 0;
 
 char* getCommand(char* command) {
 	char * singleCommand = malloc(sizeof * singleCommand);
@@ -16,25 +22,29 @@ char** getParams(char* command) {
 	char ** params = malloc(sizeof * command);
 	char * param = malloc (sizeof * param);
 	const char s[1] = " ";
-	int i = 0, j;
+	int i = 3, j;
 	
 	for (j = 0; j < sizeof(params); j ++) {
 		params[j] = malloc(sizeof * params);
 	}
 	
 	strcpy(param, command);
-	printf("Param getParam: %s\n", param);
-	
-	strtok(param, s);
-	printf("Param getParam strtok: %s\n", param);
+	strcpy(params[0], "sh");
+	strcpy(params[1], "-c");
+	strcpy(params[2], param);
+	//strtok(param, s);
 	nParams = 0;	
 	while((param = strtok(NULL, s)) != NULL){
 		strcpy(params[i], param);
-		printf("Params[%d] getParam: %s\n",i, params[i]);
 		i ++;
 		nParams ++;
 	}
-		
+	
+	if(strcmp(params[i-1], "&") == 0) {
+		flag = 1;
+	}
+	
+	params[i] = NULL;
 	return params;
 }
 
@@ -46,21 +56,27 @@ int main(){
 		if(strcmp(command, "exit") == 0){
 			printf("This is it folks\n");
 			exit(0);
-		}else if(strcmp(command, "shutdown")== 0){
+		}else if(strcmp(command, "shutdown") == 0){
 			printf("Ayo ayo amigo ayo\n");
 			exit(1);
 		}else{
 			char* singleCommand = getCommand(command);
-			printf("Single Command: %s\n", singleCommand);
-			printf("Command: %s\n", command);
 			char** params = getParams(command);
-			int i = 0;
-			printf("nParams %d\n", nParams);
-			for (i = 0; i < nParams; i ++) {
-				printf("Param %d: %s\n",i, params[i]);
+			int status;
+			pid_t p;
+			p = fork();
+			if(p == 0) {
+				execv("/bin/sh", params);
 			}
-			printf("huehuehue\n");
+			
+			//if (!flag) {
+				wait(&status);
+			//}
+			//	flag = 0;
+			
+			
 		}
+		fflush(stdin);
 	}
 	return 0;
 }
