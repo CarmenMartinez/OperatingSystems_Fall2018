@@ -4,8 +4,8 @@
 
 
 int main() {
-	printf("iniciando...");
+	printf("iniciando.../n");
 	sleep(10);
-	printf("ya termine");
+	printf("ya termine/n");
 	return 0;
 }

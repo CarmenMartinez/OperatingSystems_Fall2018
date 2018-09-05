@@ -8,7 +8,6 @@
 
 
 int nParams = 0;
-int flag = 0;
 
 char* getCommand(char* command) {
 	char * singleCommand = malloc(sizeof * singleCommand);
@@ -32,16 +31,11 @@ char** getParams(char* command) {
 	strcpy(params[0], "sh");
 	strcpy(params[1], "-c");
 	strcpy(params[2], param);
-	//strtok(param, s);
 	nParams = 0;	
 	while((param = strtok(NULL, s)) != NULL){
 		strcpy(params[i], param);
 		i ++;
 		nParams ++;
-	}
-	
-	if(strcmp(params[i-1], "&") == 0) {
-		flag = 1;
 	}
 	
 	params[i] = NULL;
@@ -65,16 +59,11 @@ int main(){
 			int status;
 			pid_t p;
 			p = fork();
+			
 			if(p == 0) {
 				execv("/bin/sh", params);
 			}
-			
-			//if (!flag) {
-				wait(&status);
-			//}
-			//	flag = 0;
-			
-			
+			wait(&status);		
 		}
 		fflush(stdin);
 	}
