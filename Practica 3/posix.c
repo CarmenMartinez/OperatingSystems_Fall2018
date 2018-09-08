@@ -13,8 +13,6 @@ long double contparc[NTHREADS];
 void * tfunc(void *args);
 
 int main() {
-	
-	long double pi = 0, x;
 	int i = 0;
 	
 	//time control
