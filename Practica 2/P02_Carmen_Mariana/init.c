@@ -27,6 +27,7 @@ int main(){
 		}
 		
 	}
+
 	signal(SIGCHLD, handleChild);			
 
 	while(1){
@@ -36,8 +37,7 @@ int main(){
 			//-PID = grupo de procesos absoluto
 			kill(0, SIGTERM);
 		}
-	}	
-
+	}		
 }
 
 void handleChild() {

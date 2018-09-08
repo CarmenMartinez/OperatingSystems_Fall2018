@@ -1,12 +1,17 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+#include<signal.h>
+#include<unistd.h>
 
 #define MAXPASSWD 50
 #define MAXUSERS 50
 
 char credentials[MAXPASSWD][MAXUSERS];
 int nUsers = 0;
+char shParam[] = {NULL};
 
 char * getUser(int indice){
 	char * user = malloc(sizeof *user);
@@ -43,7 +48,6 @@ int verifyUser(char *user, char *passwd){
 	
 	for(i = 0; i < nUsers; i++){
 		strcpy(vUser, getUser(i));
-		
 		if(strcmp(user, vUser) == 0){
 			strcpy(vPasswd, getPasswd(i));
 			sscanf(vPasswd, "%s", withoutPass);
@@ -52,13 +56,28 @@ int verifyUser(char *user, char *passwd){
 			}
 		}
 	}
-	
-	
-	strcpy(vPasswd, getPasswd(0));
-	strcpy(vUser, getUser(1));
-	
 	return 0;
-}					
+}
+
+void deadChild(int status){
+	if(status == 1){
+		//voa matar a mi papi
+		kill(getppid(), SIGTERM);
+		//exit(0);
+	}
+}
+
+void openShell(){
+	int status;
+	pid_t p;
+	p = fork();
+	if(p == 0){
+		//abrir la nueva ventana
+		execlp("./sh", shParam, NULL);
+	}
+	waitpid(p, &status, 0);
+	deadChild(status>>8);
+}
 
 int main(){
 	FILE * fpasswd;
@@ -88,10 +107,8 @@ int main(){
 		sscanf(passwd, "%s", sPasswd);
 		if(verifyUser(sUser, sPasswd) == 1){
 			printf("User verified\n");
-			m = 0;
-			//hacer todo el desvergue
+			openShell();
 		};
 	}
-		
 	return 0;
 }
