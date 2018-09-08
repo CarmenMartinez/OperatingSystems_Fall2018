@@ -10,7 +10,7 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
-#define FIBER_STACK 1024*64
+#define FIBER_STACK 1024*1024
 #define NTHREADS 4
 #define ITERATIONS 20000
 
@@ -21,6 +21,7 @@ long double pi_parc[NTHREADS];
 static int threadFunction(void * args){
 	int i;
 	int tnum = *((int *) args);
+	
 	int min_val = tnum * (ITERATIONS / 4);
 	int max_val = (tnum + 1) * (ITERATIONS / 4);
 	long double pi = 0, x = 0;
@@ -31,14 +32,13 @@ static int threadFunction(void * args){
 		pi += x;
 		x = 0;
 	}
-	printf("thread %d - %Lf\n", tnum, pi_parc[tnum]);
 	pi_parc[tnum] = pi;
-	printf("store value in %d - %Lf\n", tnum, pi_parc[tnum]);
 }
 
 int main(){
 	int i = 0;
 	void *stack;
+	
 	//time control
 	struct timeval ts;
 	long long stop_ts;
@@ -67,18 +67,16 @@ int main(){
 	for (i = 0; i < NTHREADS; i++) {
 		args[i] = i;
 		pids[i] = clone(threadFunction, (char*) stack + FIBER_STACK,
-						SIGCHLD, &args[i]);
+						SIGCHLD | CLONE_VM | CLONE_VFORK, &args[i]);
 	}
 	
 	for (i = 0; i < NTHREADS; i++) {
 		pids[i] = wait(&status);
-		printf("Ya termine %d\n", i);
 	}
 	
 	free(stack);
 	
 	for (i = 0; i < NTHREADS; i++) {
-		printf("cuanto tiene pi_parc[%d] = %Lf\n", i, pi_parc[i]);
 		pi_final += pi_parc[i];
 	}
 	
