@@ -1,4 +1,4 @@
-all: pi posix clone
+all: pi posix clone fork
 
 pi: pi.c
 	gcc -o pi pi.c -lm
@@ -9,3 +9,5 @@ posix: posix.c
 clone: clone.c
 	gcc -o clone clone.c -lm
 	
+fork: fork.c
+	gcc -o fork fork.c -lm
