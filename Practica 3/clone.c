@@ -53,7 +53,7 @@ int main(){
 	gettimeofday(&ts, NULL);
 	start_ts = ts.tv_sec * 1000000 + ts.tv_usec;
 	
-	stack = malloc (FIBER_STACK);
+	stack = malloc (FIBER_STACK * NTHREADS);
 	if ( stack == 0 ){
 		perror("malloc: could not allocate stack");
 		exit(1);
@@ -66,8 +66,8 @@ int main(){
 		
 	for (i = 0; i < NTHREADS; i++) {
 		args[i] = i;
-		pids[i] = clone(threadFunction, (char*) stack + FIBER_STACK,
-						SIGCHLD | CLONE_VM | CLONE_VFORK, &args[i]);
+		pids[i] = clone(threadFunction, (char*) stack + FIBER_STACK*(i+1),
+						SIGCHLD | CLONE_VM , &args[i]);
 	}
 	
 	for (i = 0; i < NTHREADS; i++) {
@@ -85,7 +85,7 @@ int main(){
 	
 	elapsed_time = (int) (stop_ts - start_ts);
 	
-	printf("The value of pi/4 is %Lf\n", pi_final);
+	printf("The value of pi/4 is %0.19Lf\n", pi_final);
 	printf("And it took %d microseconds\n", elapsed_time);
 	
 	return 0;

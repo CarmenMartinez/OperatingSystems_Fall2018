@@ -24,26 +24,23 @@ int elapsed_time;
 void handleChild();
 
 int main(){
-	int i = 0, high, low, j;
+	int i = 0, high, low, j, memory;
 	pid_t p;
 	long double pi = 0, x;
+	//key_t key;
 	
 	gettimeofday(&ts, NULL);
 	start_ts = ts.tv_sec * 1000000 + ts.tv_usec;
 	
 	//crear memoria
-	printf("papa malo\n\n");
+	memory = shmget(IPC_PRIVATE, sizeof(long double), IPC_CREAT | IPC_EXCL);
+	printf("Memory id = %d\n", memory);
 	for(j = 0; j < NPROCESS; j++){
 		high = (ITERATIONS / 4) * (j+1);
 		low = (ITERATIONS / 4) * (j);
-		//printf("low = %d\n", low);
-		//printf("high = %d\n", high);
 		p = fork();
 		if (p == 0){
-			printf("nino %d malo\n", j);
 			activeSons++;
-			printf("%d low = %d\n", j, low);
-			printf("%d high = %d\n", j, high);
 			pi = 0;
 			for(i = low; i < high; i++){
 				x = pow(-1, i);

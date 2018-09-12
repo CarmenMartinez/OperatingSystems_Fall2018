@@ -50,7 +50,7 @@ int main() {
 	
 	elapsed_time = (int) (stop_ts - start_ts);
 	
-	printf("The value of pi/4 is %Lf\n", cont);
+	printf("The value of pi/4 is %0.19Lf\n", cont);
 	printf("And it took %d microseconds\n", elapsed_time);
 	
 	return 0;
