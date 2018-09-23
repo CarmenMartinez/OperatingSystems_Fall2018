@@ -18,8 +18,6 @@ void scheduler(int arguments)
 	
 	int event=arguments & 0xFF00;
 	int callingthread=arguments & 0xFF;
-	
-	
 
 	if(event==TIMER){
 		quantum++;
