@@ -25,14 +25,14 @@ void scheduler(int arguments)
 	if(event==TIMER){
 		int i, nextTemp;
 		if(numThreads > 0) {
-			printf("numThreads %d | minPriority %d\n", numThreads, minPriority);
+			//printf("TIMER numThreads %d | minPriority %d\n", numThreads, minPriority);
 			if(minPriority < 9)
 				_enqueue(&priorities[minPriority + 1], callingthread);
 			else
 				_enqueue(&priorities[9], callingthread);
 			for(i = 0; i < 10; i ++) {
 				if(_emptyq(&priorities[i]) == 0) {
-					printf("cola no vacia %d\n", i);
+					//printf("TIMER not empty queue %d\n", i);
 					minPriority = i;
 					nextTemp = _dequeue(&priorities[i]);
 					_enqueue(&ready,nextTemp);
@@ -53,16 +53,16 @@ void scheduler(int arguments)
 	if(event==NEWTHREAD)
 	{
 		// Un nuevo hilo va a la cola de listos
-		threads[callingthread].status=READY;
+		threads[callingthread].status = READY;
 		_enqueue(&priorities[0],callingthread);
 		minPriority = 0;
 		numThreads ++;
-		printf("numThreads en NEWTHREAD %d\n", numThreads);
+		//printf("numThreads en NEWTHREAD %d\n", numThreads);
 	}
 	
 	if(event == BLOCKTHREAD)
 	{
-		printf("ENTRE a BLOCKED\n");
+		//printf("ENTRE a BLOCKED\n");
 		threads[callingthread].status=BLOCKED;
 		_enqueue(&waitinginevent[blockevent],callingthread);
 		
@@ -70,11 +70,11 @@ void scheduler(int arguments)
 		
 		for(i = 0; i < 10; i ++) {
 			if(_emptyq(&priorities[i]) == 0) {
-				printf("cola no vacia %d\n", i);
+				//printf("cola no vacia %d\n", i);
 				minPriority = i;
 				nextTemp = _dequeue(&priorities[i]);
 				_enqueue(&ready, nextTemp);
-				threads[callingthread].status = READY;
+				//threads[callingthread].status = READY;
 				changethread = 1;
 				break;
 			}
@@ -83,16 +83,31 @@ void scheduler(int arguments)
 
 	if(event == ENDTHREAD)
 	{
+		//printf("ENDTHREAD\n");
 		threads[callingthread].status=END;
-		changethread=1;
-		numThreads --;
+		changethread = 1;
+		numThreads--;
+		
+		int i, nextTemp;
+		
+		for(i = 0; i < 10; i ++) {
+			if(_emptyq(&priorities[i]) == 0) {
+				//printf("cola no vacia %d\n", i);
+				minPriority = i;
+				nextTemp = _dequeue(&priorities[i]);
+				_enqueue(&ready, nextTemp);
+				//threads[callingthread].status = READY;
+				changethread = 1;
+				break;
+			}
+		}
 	}
 	
 	if(event == UNBLOCKTHREAD)
 	{
 		threads[callingthread].status=READY;
 		//_enqueue(&ready,callingthread);
-		
+		//printf("UNBLOCK\n");
 		if(minPriority < 9)
 			_enqueue(&priorities[minPriority + 1], callingthread);
 		else
@@ -103,7 +118,6 @@ void scheduler(int arguments)
 	
 	if(changethread)
 	{
-		
 		old = currthread;
 		next = _dequeue(&ready);
 		
