@@ -26,7 +26,7 @@ void proceso(int i) {
 		// Llamada waitsem implementada en la parte 3
 		lEntrada = 1;
 		do { 
-			atomic_xchg(lEntrada,*bandera); 
+			atomic_xchg(lEntrada, bandera[0]); 
 		} while(lEntrada != 0);		
 		waitSem(sem);
 		
@@ -37,16 +37,16 @@ void proceso(int i) {
 		
 		// Llamada waitsignal implementada en la parte 3
 		lSalida = 1;
-		*bandera = 0;
+		bandera[1] = 0;
 		do { 
-			atomic_xchg(lSalida,*bandera); 
+			atomic_xchg(lSalida,bandera[1]); 
 		} while(lSalida != 0);
 		signalSem(sem);
 		
 		// Espera aleatoria fuera de la sección crítica
 		sleep(rand()%3);
-		*bandera = 0;
-		
+		bandera[0] = 0;
+		bandera[1] = 0;		
 	}
 	exit(0);
 	// Termina el proceso
@@ -54,10 +54,13 @@ void proceso(int i) {
 
 int main () {
 	int semID  = shmget(IPC_PRIVATE, sizeof(SEMAPHORE), IPC_CREAT | 0666);
-	int banderaID  = shmget(IPC_PRIVATE, sizeof(int), IPC_CREAT | 0666);
+	int banderaID  = shmget(IPC_PRIVATE, sizeof(int) * 2, IPC_CREAT | 0666);
 	
 	bandera = (int*) shmat(banderaID, NULL, 0);
 	sem = (SEMAPHORE) shmat(semID, NULL, 0);
+	
+	bandera [0] = 0;
+	bandera [1] = 0;
 	
 	initSem (sem);
 	int i;
@@ -76,4 +79,5 @@ int main () {
 		
 	shmdt(bandera);
 	shmdt(sem);
+	
 }
