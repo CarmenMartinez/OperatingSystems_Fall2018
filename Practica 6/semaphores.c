@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <pthread.h>
 #include <sys/wait.h>
 #include "semaphores.h"
 
@@ -10,7 +9,6 @@
 char *pais[3]={"Peru","Bolvia","Colombia"};
 
 int idsem;
-int *g;
 
 void proceso(int i)
 {
@@ -32,6 +30,7 @@ void proceso(int i)
 		// Espera aleatoria fuera de la sección crítica
 		sleep(rand()%3);
 	}
+	exit(0);
 }
 
 int main() {
@@ -42,7 +41,7 @@ int main() {
 	
 	srand(getpid());
 	
-	idsem = seminit(0x1234,2); 
+	idsem = seminit(0x1234,1); 
 	
 	for(i=0;i<3;i++){
 	// Crea un nuevo proceso hijo que ejecuta la función proceso()
