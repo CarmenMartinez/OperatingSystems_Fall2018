@@ -46,7 +46,7 @@ int pagefault(char *vaddress)
 
 
     // Si la página del proceso está en un marco virtual del disco
-    if(ptbr[pag_del_proceso].presente == 0)
+    if(ptbr[pag_del_proceso].presente == 0 && ptbr[pag_del_proceso].framenumber != -1) 
     {
         // Lee el marco virtual al buffer
         readblock(buffer, ptbr[pag_del_proceso].framenumber);
@@ -100,7 +100,7 @@ int pagefault(char *vaddress)
     }
 
     // Si la página estaba en memoria secundaria
-    if(ptbr[pag_del_proceso].presente == 0)
+    if(ptbr[pag_del_proceso].presente == 0 && ptbr[pag_del_proceso].framenumber != -1) 
     {
         // Cópialo al frame libre encontrado en memoria principal y transfiérelo a la memoria física
         writeblock(buffer, frame);
@@ -115,7 +115,39 @@ int pagefault(char *vaddress)
     return(1); // Regresar todo bien
 }
 
-int getfreeframe(){
-
+int getfreeframe()
+{
+    int i;
+    // Busca un marco libre en el sistema
+    for(i=framesbegin;i<systemframetablesize+framesbegin;i++)
+        if(!systemframetable[i].assigned)
+        {
+            systemframetable[i].assigned=1;
+            break;
+        }
+    if(i<systemframetablesize+framesbegin)
+        systemframetable[i].assigned=1;
+    else
+        i=-1;
+    return(i);
 }
+
+int searchvirtualframe(){
+    int i;
+    for(i=(framesbegin+systemframetablesize);i<(systemframetablesize+framesbegin)*2;i++)
+        if(!systemframetable[i].assigned)
+        {
+            systemframetable[i].assigned=1;
+            break;
+        }
+    if(i<(systemframetablesize+framesbegin)*2)
+        systemframetable[i].assigned=1;
+    else
+        i=-1;
+    return(i);
+}
+
+
+
+
 
