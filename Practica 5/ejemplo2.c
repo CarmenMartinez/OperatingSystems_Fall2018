@@ -1,13 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/ipc.h>
+#include
 #include <sys/shm.h>
-#include <sys/wait.h>
 
-#define CICLOS 10
-char *pais[3]={"Peru","Bolvia","Colombia"};
-int *g;
 
 #define atomic_xchg(A,B) __asm__ __volatile__(			\
 										"lock xchg %1,%0 ;\n"		\

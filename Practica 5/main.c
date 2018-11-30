@@ -46,7 +46,7 @@ void proceso(int i) {
 		// Espera aleatoria fuera de la sección crítica
 		sleep(rand()%3);
 		bandera[0] = 0;
-		bandera[1] = 0;		
+		bandera[0] = 0;		
 	}
 	exit(0);
 	// Termina el proceso
